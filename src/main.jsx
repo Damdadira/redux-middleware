@@ -6,9 +6,10 @@ import './index.css'
 import rootReducer from './modules/index.jsx'
 // import myLogger from './middlewares/myLogger.jsx'
 import logger from 'redux-logger'
+import { thunk } from 'redux-thunk'
 
 // const store = createStore(rootReducer, applyMiddleware(myLogger, logger))
-const store = createStore(rootReducer, applyMiddleware(logger))
+const store = createStore(rootReducer, applyMiddleware(thunk, logger))
 
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
