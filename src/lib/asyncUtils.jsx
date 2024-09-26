@@ -53,14 +53,14 @@ export const reducerUtils = {
  * 비동기 관련 액션들을 처리하는 reducer를 만들어줌
  * type: action.type, key: state.key
  */
-export const handleAsyncActions = (type, key) => {
+export const handleAsyncActions = (type, key, keepData = false) => {
   const [SUCCESS, ERROR] = [`${type}_SUCCESS`, `${type}_ERROR`];
   return(state, action) => {
     switch(action.type){
       case type:
         return {
           ...state,
-          [key]: reducerUtils.loading()
+          [key]: reducerUtils.loading(keepData ? state[key].data : null)
         }
       case SUCCESS:
         return {
@@ -70,7 +70,7 @@ export const handleAsyncActions = (type, key) => {
       case ERROR:
         return {
           ...state,
-          [key]: reducerUtils.error(action.payload)
+          [key]: reducerUtils.error(action.error)
         }
       default:
         return state;
