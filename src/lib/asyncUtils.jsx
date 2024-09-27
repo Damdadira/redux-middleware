@@ -1,3 +1,5 @@
+import { call, put } from 'redux-saga/effects'
+
 /**
  * Promise에 기반한 Thunk를 만들어주는 함수
  */
@@ -19,6 +21,43 @@ export const createPromiseThunk = (type, promiseCreator) => {
     }
     catch(e){
       dispatch({type: ERROR, payload: e, error: true}); //실패
+    }
+  }
+}
+
+/**
+ * Promise를 기다렸다가 결과를 dispatch하는 saga
+ */
+export const createPromiseSaga = (type, promiseCreator) => {
+  const [SUCCESS, ERROR] = [`${type}_SUCCESS`, `${type}_ERROR`];
+
+  return function* saga(action){
+    try{
+      //재사용성을 위하여 promiseCreator의 파라미터엔 action.payload 값을 넣도록 함
+      const payload = yield call(promiseCreator, action.payload);
+      yield put({type: SUCCESS, payload});
+    }
+    catch(e){
+      yield put({type: ERROR, payload: e, error: true});
+    }
+  }
+}
+
+/**
+ * 특정 id의 데이터를 조회하는 용도로 사용하는 사가
+ * api를 호출할 때 파라미터는 action.payload를 넣고, id 값을 action.meta로 설정
+ */
+export const createPromiseSagaById = (type, promiseCreator) => {
+  const [SUCCESS, ERROR] = [`${type}_SUCCESS`, `${type}_ERROR`];
+
+  return function* saga(action){
+    const id = action.meta;
+    try{
+      const payload = yield call(promiseCreator, action.payload);
+      yield put({type: SUCCESS, payload, meta: id});
+    }
+    catch(e){
+      yield put({type: ERROR, error: e, meta: id});
     }
   }
 }
@@ -84,7 +123,6 @@ export const handleAsyncActions = (type, key, keepData = false) => {
  * 2. 기본값으로는 파라미터 그대로 id를 사용
  * 3. 만약 파라미터가 {id:1, details: true} 이런 형태라면 param => param.id로 설정할 수 있음
  */
-
 /**
  * 특정 id를 처리하는 thunk 생성함수
  */
