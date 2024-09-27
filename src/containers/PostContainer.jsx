@@ -22,9 +22,9 @@ export default function PostContainer({postId}){
   if(!data) return null;
 
   return (
-    <div style={{margin: '1rem'}}>
+    <>
       <button style={{background: '#6bba8d', color: '#fff'}} onClick={() => dispatch(goToHome(navigate))}>홈으로 이동</button>
       <Post post={data}></Post>
-    </div>
+    </>
   )
 }
