@@ -18,10 +18,3 @@ export default function PostListContainer(){
   if(!data) return null
   return <PostList posts={data}></PostList>
 }
-
-
-
-
-
-
-//7장. 리덕스 미들웨어 > 6. API 재로딩 문제 해결하기!!!!!

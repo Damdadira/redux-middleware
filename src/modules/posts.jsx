@@ -1,5 +1,5 @@
 import * as postsAPI from '../api/posts' //api/posts안의 함수 모두 불러오기
-import { createPromiseThunk, reducerUtils, handleAsyncActions } from '../lib/asyncUtils';
+import { createPromiseThunk, reducerUtils, handleAsyncActions, createPromiseThunkById, handleAsyncActionsById } from '../lib/asyncUtils';
 
 /**
  * post 여러개 조회하기 
@@ -24,13 +24,13 @@ const CLEAR_POST = 'CLEAR_POST';
  * thunk 함수 만들기
  */
 export const getPosts = createPromiseThunk(GET_POSTS, postsAPI.getPosts);
-export const getPost = createPromiseThunk(GET_POST, postsAPI.getPostById);
+export const getPost = createPromiseThunkById(GET_POST, postsAPI.getPostById);
 
 export const clearPost = () => ({type: CLEAR_POST});
 
 const initialState = {
   posts: reducerUtils.initial(),
-  post: reducerUtils.initial()
+  post: {}
 }
 
 export default function posts(state = initialState, action){
@@ -42,12 +42,7 @@ export default function posts(state = initialState, action){
     case GET_POST:
     case GET_POST_SUCCESS:
     case GET_POST_ERROR:
-      return handleAsyncActions(GET_POST, 'post')(state, action);
-    case CLEAR_POST:
-      return {
-        ...state,
-        post: reducerUtils.initial()
-      }
+      return handleAsyncActionsById(GET_POST, 'post', true)(state, action);
     default:
       return state;
   }

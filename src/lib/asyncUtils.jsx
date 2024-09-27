@@ -77,3 +77,72 @@ export const handleAsyncActions = (type, key, keepData = false) => {
     }
   }
 }
+
+/**
+ * idSelector
+ * 1. 파라미터에서 id를 어떻게 선택할지 정의하는 함수
+ * 2. 기본값으로는 파라미터 그대로 id를 사용
+ * 3. 만약 파라미터가 {id:1, details: true} 이런 형태라면 param => param.id로 설정할 수 있음
+ */
+
+/**
+ * 특정 id를 처리하는 thunk 생성함수
+ */
+const defaultIdSelector = param => param;
+export const createPromiseThunkById = (type, promiseCreator, idSelector = defaultIdSelector) => {
+  const [SUCCESS, ERROR] = [`${type}_SUCCESS`,  `${type}_ERROR`];
+
+  return param => async dispatch => {
+    const id = idSelector(param);
+    dispatch({type, meta: id});
+    try{
+      const payload = await promiseCreator(param);
+      dispatch({type: SUCCESS, payload, meta: id});
+    }
+    catch(e){
+      dispatch({type: ERROR, error: true, payload: e, meta: id});
+    }
+  }
+}
+
+/**
+ * id별로 처리하는 유틸함수
+ */
+export const handleAsyncActionsById = (type, key, keepData = false) => {
+  const [SUCCESS, ERROR] = [`${type}_SUCCESS`,  `${type}_ERROR`];
+
+  return(state, action) => {
+    const id = action.meta;
+    switch(action.type){
+      case type:
+        return {
+          ...state,
+          [key]: {
+            ...state[key],
+            [id]: reducerUtils.loading(
+              //유효성 검사(state[key][id]가 만들어져 있지 않을수도 있기 때문)
+              keepData ? state[key][id] && state[key][id].data : null
+            )
+          }
+        }
+      case SUCCESS:
+        return {
+          ...state,
+          [key]: {
+            ...state[key],
+            [id]: reducerUtils.success(action.payload)
+          }
+        }
+      case ERROR:
+        return {
+          ...state,
+          [key]: {
+            ...state[key],
+            [id]: reducerUtils.error(action.payload)
+          }
+        }
+      default:
+        return state;
+    }
+  }
+}
