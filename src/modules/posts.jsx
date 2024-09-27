@@ -47,3 +47,9 @@ export default function posts(state = initialState, action){
       return state;
   }
 }
+
+export const goToHome = (navigate) => (dispatch, getState) => {
+  // console.log(getState().posts);
+  dispatch({type: 'GET_POSTS'})
+  navigate("/");
+};
