@@ -9,6 +9,3 @@ export function* rootSaga(){
 }
 
 export default rootReducer;
-
-
-//7장. 리덕스 미들웨어 > 11. redux-saga로 프로미스 다루기!!!!

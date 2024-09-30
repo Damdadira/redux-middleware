@@ -29,7 +29,7 @@ export const getPosts = () => ({type: GET_POSTS});
 export const getPost = id => ({type: GET_POST, payload: id, meta: id}) //payload: 파라미터, meta: reducer에서 id를 알기 위한 용도
 
 const getPostsSaga = createPromiseSaga(GET_POSTS, postsAPI.getPosts);
-const getPostSaga = createPromiseSaga(GET_POST, postsAPI.getPostById);
+const getPostSaga = createPromiseSagaById(GET_POST, postsAPI.getPostById);
 
 /**
  * 사가들을 합치기

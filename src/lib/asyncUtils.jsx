@@ -38,7 +38,7 @@ export const createPromiseSaga = (type, promiseCreator) => {
       yield put({type: SUCCESS, payload});
     }
     catch(e){
-      yield put({type: ERROR, payload: e, error: true});
+      yield put({type: ERROR, error: true, payload: e});
     }
   }
 }
@@ -109,7 +109,7 @@ export const handleAsyncActions = (type, key, keepData = false) => {
       case ERROR:
         return {
           ...state,
-          [key]: reducerUtils.error(action.error)
+          [key]: reducerUtils.error(action.payload)
         }
       default:
         return state;
