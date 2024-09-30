@@ -14,6 +14,9 @@ const sagaMiddleware = createSagaMiddleware(); //사가 미들웨어를 만들�
 // const store = createStore(rootReducer, applyMiddleware(myLogger, logger))
 const store = createStore(rootReducer, applyMiddleware(thunk, sagaMiddleware, logger))
 
+/**
+ * 주의: 스토어 생성이 된 다음 아래 코드를 실행해야함
+ */
 sagaMiddleware.run(rootSaga)
 
 createRoot(document.getElementById('root')).render(
